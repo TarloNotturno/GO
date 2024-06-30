@@ -1,4 +1,4 @@
-package MyRnd
+package MyFunc
 
 import (
 	"math/rand/v2"
