@@ -39,6 +39,11 @@ each element of arrays P and Q is an integer within the range [0..N - 1];
 P[K] ≤ Q[K], where 0 ≤ K < M;
 string S consists only of upper-case English letters A, C, G, T.
 */
+import (
+	"errors"
+	"fmt"
+	"strings"
+)
 
 var GenomaMap = map[string]int{
 	"A": 1,
@@ -47,8 +52,16 @@ var GenomaMap = map[string]int{
 	"T": 4,
 }
 
-func GenomicRangeQuery(S string, P []int, Q []int) []int {
+func GenomicRangeQuery(S string, P []int, Q []int) ([]int, error) {
 	result := make([]int, cap(P))
+	//input check
+	if cap(P) != cap(Q) {
+		return result, errors.New("Input Dimension slices mismatches")
+	}
+
+	if len(S) < 0 {
+		return result, errors.New("Genoma string was not correct")
+	}
 	var genomWg [][]int
 
 	// Per A, C e G calcolo l'array dei pesi. Se è presente in posizione i il carattere corrispondete incremento il peso nella riga attuale
@@ -56,16 +69,23 @@ func GenomicRangeQuery(S string, P []int, Q []int) []int {
 		app_incr := 0
 		genomWg = append(genomWg, make([]int, len(S)+1))
 		for j := 0; j < len(S); j++ {
+			if GenomaMap[string(S[j])] == 0 {
+				return result, errors.New("Genoma string was not correct")
+			}
 			if GenomaMap[string(S[j])] == i+1 {
 				app_incr++
 			}
 			genomWg[i][j+1] = app_incr
 		}
 	}
-
+	fmt.Println(len(P), cap(P), cap(Q), len(Q))
 	// Per ciascun controllo da fare tra indice Q e P valuto se nella matrice dei pesi di A abbiamo un incremento, altrimenti C, altrimenti G o infine altrimenti significa
 	// che il minimo per il controllo attuale i esimo è pari al max valore possibile, ovvero 4
-	for i := 0; i < cap(P); i++ {
+	for i := 0; i < len(P); i++ {
+		if P[i] > Q[i] {
+			a := []string{"The index used for second vector at position", fmt.Sprint(i), "is less than the one at the same index for first input vector"}
+			return result, errors.New(strings.Join(a, " "))
+		}
 		if (genomWg[0][Q[i]+1] - genomWg[0][P[i]]) > 0 {
 			result[i] = 1
 		} else if genomWg[1][Q[i]+1]-genomWg[1][P[i]] > 0 {
@@ -78,5 +98,5 @@ func GenomicRangeQuery(S string, P []int, Q []int) []int {
 
 	}
 
-	return result
+	return result, nil
 }
