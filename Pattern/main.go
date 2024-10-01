@@ -76,10 +76,23 @@ func main() {
 
 	fmt.Println("DECORATOR METHOD ----------------------------------------------------")
 	var (
-		input1 = DP.ExampleDecorator{Begin: "lol", End: "#"}
-		input2 = DP.ExampleDecorator{Begin: "_", End: "!"}
-		input3 = DP.ExampleDecorator{Begin: "/", End: "\""}
-		int1   = DP.NumericDecorator{Begin: 1, End: 22}
+		decor1 DP.Printer
+		decor2 DP.Printer
+		decor3 DP.Printer
+		input1 DP.ExampleDecorator
+		input2 DP.ExampleDecorator
+		input3 DP.ExampleDecorator
+		int1   DP.NumericDecorator
 	)
-	fmt.Println(int1.Decorator(input1.Decorator(input2.Decorator(input3.Decorator("la bella lava il fosso")))))
+
+	input1.Initialize("lol", "#", nil)
+	input2.Initialize("_", "!", input1)
+	input3.Initialize("wenetu", "uenIGroUp", input2)
+	int1.Initialize(22, 911, input3)
+	fmt.Println(int1.Decorator("IWillDestroi"))
+
+	decor1.Initialize("{", "}", nil)
+	decor2.Initialize("[", "]", decor1)
+	decor3.Initialize("(", ")", decor2)
+	fmt.Println(decor3.Decorator("pippo"))
 }
