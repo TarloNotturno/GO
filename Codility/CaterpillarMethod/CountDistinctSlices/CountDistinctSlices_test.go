@@ -10,20 +10,22 @@ import (
 func TestCaterpillar(t *testing.T) {
 	fmt.Println("Test caterpillar func, find slice with not first element repeted. Check with []int{2, 2}")
 	input := []int{2, 2}
-	control := CaterpillarSlice(input, 0)
+	OccurrencyMap := MappingOccurrency(input)
+	control := CaterpillarSlice(input, OccurrencyMap, 0)
 	if control.begin != 0 || control.end != 0 {
 		t.Fatalf(`CaterpillarSlice([]int{2, 2},0) obtain begin = %v expected equal to 0 and obtain end = %v expected equal to 0`, control.begin, control.end)
 	}
-	control = CaterpillarSlice(input[1:], 1)
+	control = CaterpillarSlice(input[1:], OccurrencyMap, 1)
 	if control.begin != 1 || control.end != 1 {
 		t.Fatalf(`CaterpillarSlice([]int{2},0) obtain begin = %v expected equal to 1 and obtain end = %v expected equal to 1`, control.begin, control.end)
 	}
 
 	fmt.Println("Test caterpillar func, find slice with not first element repeted. Check with []int{1, 2}")
 	input = []int{1, 2}
-	control = CaterpillarSlice(input, 0)
+	OccurrencyMap = MappingOccurrency(input)
+	control = CaterpillarSlice(input, OccurrencyMap, 0)
 	if control.begin != 0 || control.end != 1 {
-		t.Fatalf(`CaterpillarSlice([]int{1, 2},0) obtain begin = %v expected equal to 0 and obtain end = %v expected equal to 1`, control.begin, control.end)
+		t.Fatalf(`CaterpillarSlice(%v)) obtain begin = %v expected equal to 0 and obtain end = %v expected equal to 1`, input, control.begin, control.end)
 	}
 
 }
@@ -44,6 +46,7 @@ func TestSumResults(t *testing.T) {
 	}
 }
 
+// test empty array
 func TestEmpty(t *testing.T) {
 	var input_empty []int
 	fmt.Printf("Test Zero: check empty array Solution(5, %v ) = %v\n", input_empty, Solution(5, input_empty))
@@ -51,16 +54,19 @@ func TestEmpty(t *testing.T) {
 		t.Fatalf(`Solution(5, []int) %v expect solution is "", 0`, Solution(5, input_empty))
 	}
 }
+
+// test array with just two equal element
 func TestOne(t *testing.T) {
 	input := []int{1}
 	solution := Solution(6, input)
 	fmt.Printf("First test: check empty array Solution(5, %v ) = %v\n", input, solution)
 	if solution != 1 {
-		t.Fatalf(`Solution(5, []int{1}) %v expect solution is 1`, solution)
+		t.Fatalf(`Solution(5, %v) %v expect solution is 1`, input, solution)
 	}
 
 }
 
+// test array with just two different element
 func TestDouble(t *testing.T) {
 	input := []int{1, 2}
 	solution := Solution(6, input)
@@ -72,33 +78,41 @@ func TestDouble(t *testing.T) {
 	solution = Solution(2, input)
 	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
 	if solution != 2 {
-		t.Fatalf(`Solution(5, []int{2, 2}) %v expect solution is 2`, solution)
+		t.Fatalf(`Solution(5, %v) %v expect solution is 2`, input, solution)
 	}
 
 }
 
+// Codility example tested
 func TestBaseCase(t *testing.T) {
 	input := []int{3, 4, 5, 5, 2}
 	solution := Solution(6, input)
-	fmt.Printf("Base test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	fmt.Printf("Base test: check codility example array Solution(5, %v ) = %v\n", input, solution)
 	if solution != 9 {
-		t.Fatalf(`Solution(5, []int{3, 4, 5, 5, 2}) %v expect solution is 9`, solution)
+		t.Fatalf(`Solution(5,  %v) %v expect solution is 9`, input, solution)
 	}
 
 }
 
-func TestFunctionalCase(t *testing.T) {
-	input := []int{5, 4, 7, 5, 7, 9, 2}
-	solution := Solution(6, input)
-	if solution != 18 {
-		t.Fatalf(`Solution(5, []int{5, 4, 7, 5, 7, 9, 2}) %v expect solution is 18`, solution)
-	}
+// launch a test case with a longer array
+func TestFunctionalCase0(t *testing.T) {
 
-	input = []int{5, 4, 7, 5, 7, 9, 2, 3, 8, 7, 12, 2, 22, 15, 18, 2, 8}
-	solution = Solution(5, input)
+	input := []int{5, 4, 7, 5, 7, 9, 2}
+	solution := Solution(9, input)
+	fmt.Printf("Check array Solution(9, %v ) = %v\n", input, solution)
+	if solution != 18 {
+		t.Fatalf(`Solution(5, %v) %v expect solution is 18`, input, solution)
+	}
+}
+
+func TestFunctionalCase1(t *testing.T) {
+	// longer array with a different condition
+	input := []int{5, 4, 7, 5, 7, 9, 2, 3, 8, 7, 12, 2, 22, 15, 18, 2, 8}
+	solution := Solution(22, input)
+	fmt.Printf("Check array Solution(22, %v ) = %v\n", input, solution)
 	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
 
 	if Solution(6, input) != 51 {
-		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 51`, solution)
+		t.Fatalf(`Solution(5, %v) %v expect solution is 51`, input, solution)
 	}
 }
