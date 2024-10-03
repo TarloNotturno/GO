@@ -6,6 +6,7 @@ type Caterpillar struct {
 	number int
 }
 
+// Function that taking a slice calculate the combination of subslices with unique element
 func sumResults(begin int, end int) int {
 	result := 0
 	for i := end - begin + 1; i > 0; i-- {
@@ -14,6 +15,7 @@ func sumResults(begin int, end int) int {
 	return result
 }
 
+// "main" function to evaluate all slices with unique element in an array
 func Solution(M int, A []int) int {
 	occurrencies := MappingOccurrency(A)
 	firstCaterpillar := CaterpillarSlice(A, occurrencies, 0)
@@ -52,7 +54,9 @@ func Solution(M int, A []int) int {
 			}
 			i++
 		}
-		result = result + sumResults(firstCaterpillar.begin, firstCaterpillar.end) - old_sum
+		if !(firstCaterpillar.begin == firstCaterpillar.end && firstCaterpillar.begin == 0) {
+			result = result + sumResults(firstCaterpillar.begin, firstCaterpillar.end) - old_sum
+		}
 		return result
 	} else {
 		return len(A)
@@ -60,14 +64,16 @@ func Solution(M int, A []int) int {
 
 }
 
+// function that for an element of the array reports an array with its occurrencies
 func MappingOccurrency(A []int) map[int][]int {
 	ricorrenze := make(map[int][]int)
-	for i, _ := range A {
+	for i := range A {
 		ricorrenze[A[i]] = append(ricorrenze[A[i]], i)
 	}
 	return ricorrenze
 }
 
+// find the maximum slice length for a given number
 func CaterpillarSlice(A []int, OccurrencyMap map[int][]int, delta int) Caterpillar {
 	var currentCaterpillar Caterpillar
 	if len(A) > 0 {
