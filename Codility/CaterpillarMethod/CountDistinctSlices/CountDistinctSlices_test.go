@@ -53,36 +53,52 @@ func TestEmpty(t *testing.T) {
 }
 func TestOne(t *testing.T) {
 	input := []int{1}
-	fmt.Printf("First test: check empty array Solution(5, %v ) = %v\n", input, Solution(5, input))
-	if Solution(5, input) != 1 {
-		t.Fatalf(`Solution(5, []int{1}) %v expect solution is 1`, Solution(5, input))
+	solution := Solution(6, input)
+	fmt.Printf("First test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	if solution != 1 {
+		t.Fatalf(`Solution(5, []int{1}) %v expect solution is 1`, solution)
 	}
 
 }
 
 func TestDouble(t *testing.T) {
 	input := []int{1, 2}
-	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, Solution(5, input))
-	if Solution(5, input) != 3 {
-		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 3`, Solution(5, input))
+	solution := Solution(6, input)
+	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	if solution != 3 {
+		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 3`, solution)
 	}
 	input = []int{2, 2}
-	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, Solution(5, input))
-	if Solution(5, input) != 2 {
-		t.Fatalf(`Solution(5, []int{2, 2}) %v expect solution is 2`, Solution(5, input))
+	solution = Solution(2, input)
+	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	if solution != 2 {
+		t.Fatalf(`Solution(5, []int{2, 2}) %v expect solution is 2`, solution)
+	}
+
+}
+
+func TestBaseCase(t *testing.T) {
+	input := []int{3, 4, 5, 5, 2}
+	solution := Solution(6, input)
+	fmt.Printf("Base test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	if solution != 9 {
+		t.Fatalf(`Solution(5, []int{3, 4, 5, 5, 2}) %v expect solution is 9`, solution)
 	}
 
 }
 
 func TestFunctionalCase(t *testing.T) {
 	input := []int{5, 4, 7, 5, 7, 9, 2}
-	if Solution(6, input) != 16 {
-		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 16`, Solution(6, input))
+	solution := Solution(6, input)
+	if solution != 18 {
+		t.Fatalf(`Solution(5, []int{5, 4, 7, 5, 7, 9, 2}) %v expect solution is 18`, solution)
 	}
 
 	input = []int{5, 4, 7, 5, 7, 9, 2, 3, 8, 7, 12, 2, 22, 15, 18, 2, 8}
-	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, Solution(5, input))
+	solution = Solution(5, input)
+	fmt.Printf("Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
+
 	if Solution(6, input) != 51 {
-		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 51`, Solution(6, input))
+		t.Fatalf(`Solution(5, []int{1, 2}) %v expect solution is 51`, solution)
 	}
 }
