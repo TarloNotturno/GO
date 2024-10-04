@@ -1,0 +1,120 @@
+
+SWC : AnalogInCurr -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+TrafoPrimCurrSensVal 
+	Provided port:
+TrafoPrimCurr 
+SWC : DisMgm -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+SafeMode SafeMode 
+	Provided port:
+n.a.
+SWC : SafeAnalogInTemp ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+SCRTempSensVal DCLinkTempSensVal CoolantTemp2SensVal PFC2TempSensVal PFC3TempSensVal LLCPriTempSensVal LLCSecTempSensVal ReleTempSensVal PFC1TempSensVal CoolantTempSensVal SacLogicTempSensVal TrafoTempSensVal 
+	Provided port:
+LLCSecTemp SCRTemp CoolantTemp LLCTrafoTemp LLCPriTemp PFC2Temp PFC3Temp CoolantTemp2 DCLinkTemp ReleTemp SacLogicTemp PFC1Temp 
+SWC : GridDet ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+PhAngleL3L1 PhAngleL1N PhAngleL1L2 PhAngleL3N PhAngleL2N PhAngleL2L3 NetFreq PFCL1VoltSDFT PFCL2VoltSDFT PFCL3VoltSDFT 
+	Provided port:
+NumActualPhases StGrid 
+SWC : SafeAnalogInCurr ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+PFCL1CurrSensVal PFCL2CurrSensVal PFCL3CurrSensVal PFCNCurrSensVal HVBattCurrSensVal 
+	Provided port:
+PFCNCurr HVBattCurr PFCL1Curr PFCL2Curr PFCL3Curr 
+SWC : AnalogInVolt -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+EarthNVoltSensVal SupVoltSensVal HVILACSensVal HVILDCSensVal MuxSbcVoltSensVal DCLinkBotEarthVoltSensVal DCLinkTopEarthVoltSensVal 
+	Provided port:
+DCLinkTopEarth EarthNVolt SupVolt HVILAC HVILDC MuxSbcVolt DCLinkBotEarth 
+SWC : SafeOBCSM ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+StSafetyMngr StSafeElecFaultMask FlgSafeSensorFault StIsoMon StSafeOBCActuatorMask ComStCableAC StSafeTempFaultMask StSafeOBCActuator ComReqOBCDeact ComReqOBCMode 
+	Provided port:
+ReqIsoMon StACVoltage StDCVoltage StSafeOBCSMMask StSafeOBCSMMask StSafeOBCSM ReqSafeOBCActuator ReqIsoMon 
+SWC : CustFaultMgm -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+HVILAC HVILDC DiagnosticMonitorOBCHVILFault 
+	Provided port:
+StCustFaultMask StHVILAC StHVILDC 
+SWC : SafeTempFaultMgm ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+PFC3Temp DiagnosticMonitorOBCCool1TSOverT DiagnosticMonitorOBCDCITSOverT DiagnosticMonitorOBCLogTSOverT DCLinkTemp CoolantTemp LLCPriTemp LLCSecTemp SCRTemp DiagnosticMonitorOBCPFCMl3TSOverT 
+DiagnosticMonitorOBCRelTSOverT DiagnosticMonitorOBCTrafoTSOverT DiagnosticMonitorOBCPFCMl1TSOverT PFC1Temp PFC2Temp ReleTemp SacLogicTemp DiagnosticMonitorOBCSecLLCTSOverT DiagnosticMonitorOBCPrimLLCTSOverT CoolantTemp2 LLCTrafoTemp 
+DiagnosticMonitorOBCPFCMl2TSOverT DiagnosticMonitorOBCCool2TSOverT DiagnosticMonitorOBCSCRTSOverT 
+	Provided port:
+StSafeTempFaultMask 
+SWC : GpioMgm ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+StOBC GpioVal GpioVal GpioVal ReqCust 
+	Provided port:
+StGpioMgm 
+SWC : ErrorHandler -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+Reset; ReqErrorHandler Reset FaultVal SafeMode DiagnosticMonitor MeasOBCEff StCustFaultMask FlgSensorFault MaxAvailPwrDC DisMGMSafeMode DisMGMSafeMode StElecFaultMask StDerating DcPwrSetPoint SafeMode StElecFaultMask 
+StSafeOBCSMMask 
+	Provided port:
+StDegradation FlgErrDetected StErrorHandlerMask StatusPWM StErrorHandler 
+SWC : IsoMon -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+Set Get IMDEstimateEnable SafePwmUpdate Set Get SafePwmUpdate Set SafeGpioVal IMDEstimateEnable StSafeOBCSM IsoMonMeasCurrSample Set; Set Get SafePwmUpdate Get StSafeOBCSM Set 
+	Provided port:
+StIsoMon StIsoMon StIsoMon StIsoMon StIsoMon StIsoMon StIsoMon StIsoMon 
+SWC : SafeElecFaultMgm ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+PFCL2VoltRms Get SetEv SetEv SetEve DiagnosticMonitor5VAuxVoltOvr SetEv; DiagnosticMonitorOBCPFCL3ACISensOvI DiagnosticMonitorOBCHVDCVsOverVFault1 DCLinkBotVolt Set; SafeFaultVal HVBattVolt SetEventSta 
+DiagnosticMonitorOBCHVDCVsOverVFault2 SetEventStatus; SetEventStatus SafeFaultVal Sup5VAuxVolt HVBattCurr DiagnosticMonitorOBCPFCNACISensOvI SetEventSta; DiagnosticMonitor5VccOvr Ref5VACVolt PFCL3VoltRms SetEventStatus SetEventSta; SetEv; PFCL1VoltRms 
+DCLinkTopVolt PFCL3CurrRms PFCNCurrRms Get Get SetEv; Set Sup5VccVolt Set Set DiagnosticMonitorFisKL30UndU DiagnosticMonitorOBCPFCL1ACISensOvI PFCL1CurrRms DiagnosticMonitorOBCPFCL2ACISensOvI Set; SafeFaultVal KL30PosVolt Set; 
+DiagnosticMonitorOBCHVDCBattISensOveI DiagnosticMonitor5VccUnd SetEventStat; Get Get DiagnosticMonitor5VAuxVoltUnd SetEventStatus; SetEventSta Get SetEv SetEventStat PFCL2CurrRms SetEve; 
+	Provided port:
+StSafeElecFaultMask 
+SWC : LLCCont ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+n.a.
+	Provided port:
+n.a.
+SWC : SafeAnalogInVolt ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+HVBattVoltSensVal DCLinkTopVoltSensVal Sup5VAuxVoltSensVal Sup5VccVoltSensVal KL30PosVoltSensVal PFCL1VoltSensVal PFCL2VoltSensVal PFCL3VoltSensVal DCLinkBotVoltSensVal KL30NegVoltSensVal Ref5VACVoltSensVal 
+	Provided port:
+KL30PosVolt Sup5VAuxVolt Sup5VccVolt DCLinkBotVolt DCLinkTopVolt PFCL1Volt PFCL3Volt KL30NegVolt Ref5VACVolt HVBattVolt PFCL2Volt 
+SWC : TargetCalc ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+StGpioMgm ComReqOBCMode ComReqOBCDeact StSafeOBCSM RcmControl PrechBattVoltSetPoint ComStHVSwitch V2LVoltSetPoint StDegradation DiagnosticMonitorOBCDerat ReqErrorHandler NumActualPhases MaxAvailPwrAC MaxAvailPwrDC 
+DcPwrSetPoint LLCUniPwr StErrorHandlerMask DCLinkBotVolt StOBC V2LMaxPwrTh HVBattVolt StRelay GainDerating RcmControl MeasPwrAC ComStHVBus V2LMaxCurrTh OBCAcMaxCurrTh StGrid DCLinkTopVolt StErrorHandler V2LFreqSetPoint 
+	Provided port:
+MeasOBCEff NumAvailPh DCAppliedPwrSetPoint ActualACPwr MeasOBCEff NumAvailPh HWUpLimPower ActualACPwrV2L MeasOBCEff StErrMask StErrMask RcmReq MeasOBCEff UpLimPower DCSatPwrSetPoint ActualACPwrV2L MeasOBCDcPwr 
+ActualSwitchConfig ActualACPwrV2L ActualSwitchConfig MeasOBCDcPwr NetL1MaxCurr StOBCCust ActualACPwr DCSatPwrSetPoint UpLimPower MeasOBCAcPwr RequestPWM ReqCust ActualACPwr 
+SWC : SafeOBCActuator ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+Set; Stop Reset Get Stop Reset SafePwmUpdate HwTest Reset Get Get Stop SafeFaultVal Set Set HwTest Set Get Set Reset SafePwmUpdate Set1 Set1 Stop; Reset1; SafeGpioVal SbcFs0BTest Start; SbcSafetyPath Reset1 Reset1 Get Reset; 
+SafeFaultVal Reset1 Get SafePwmUpdate Set2 Set Set; Set SafeGpioVal Set2 Reset ReqSafeOBCActuator SafeGpioVal SbcFs0BTest Start 
+	Provided port:
+StSafeOBCActuator StSafeOBCActuatorMask 
+SWC : OBCPwrMgm ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+StGrid StRelay PFCL3VoltSDFT DCLinkTopVolt StPFCUni ReqCust PFCL2VoltSDFT PFCL1CurrRms DCLinkBotVolt GainDerating PFCL3CurrRms StLLCUni StPFCUni StGpioMgm HVBattVolt HVBattCurr PFCL1VoltSDFT PFCL2CurrRms 
+	Provided port:
+MaxAvailPwrDC MaxAvailPwrDC MaxAvailPwrAC MaxAvailPwrAC ReqLLCUni ReqPFCUni StOBC 
+SWC : ElecFaultMgm -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+Get3 Get DiagnosticMonitorOBCPrimLLCISensOvI SetEventSt; DiagnosticMonitorOBCL2NACVSensPosUpV Get2 GpioVal Get DiagnosticMonitorOBCL3NACVSensPosLowV PFCNCurrRms Get Get Get1 Get Get Get2 Get SetEventSt; Get 
+DiagnosticMonitorOBCNISensOvI SetEvent DiagnosticMonitorOBCL1NACVSensPosLowV SetEventStat Get Get3 SetEventSt; Get SetEventSt; Get MaxAcBias HVBattCurr SetEventSt Get3 SetEventSt; SetEventSt DiagnosticMonitorOBCPFCL1ACISensSC SetEventStatus 
+SetEvent; SetEvent SetEven; SetEventStatus Get1 SetEventSt Get DiagnosticMonitorOBCPFCL3ACISensSC EarthNSensVoltRms DiagnosticMonitorDcLinkTopVoltOvrU Get SetEventStatu Get Get Get DiagnosticMonitorOBCPFCL2ACISensSC Get 
+FaultVal Get SetEvent Get Get DiagnosticMonitorOBCHVDCVsOverV Get1 SetEvent; SetEven; PFCL3VoltRms SetEventStat; Get SetEven; DiagnosticMonitorKL30Ovr Get2 SetEventSt SetEventSt Get Get DiagnosticMonitorOBCL2NACVSensPosLowV Get1 
+Get KL30PosVolt Get SetEven DiagnosticMonitorDcLinkTopVoltUndU Get Get SetEventStatu; Get PFCL1VoltRms DiagnosticMonitorOBCL1NACVSensPosUpV DiagnosticMonitorOBCL3NACVSensPosUpV SetEvent; Get3 SetEventS; SetEventS Get 
+SetEven DiagnosticMonitorOBCHVDCVsUnderV SetEventStatus; SetEventStatus; Get Get2 HVBattVolt Get3 Get PFCL2VoltRms Get SetEven 
+	Provided port:
+StElecFaultMask 
+SWC : PFCCont ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+n.a.
+	Provided port:
+n.a.
+SWC : Derating -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	Required port:
+PFC3Temp CoolantTemp2 SacLogicTemp ReleTemp HVBattVolt DCLinkTemp SCRTemp PFC2Temp PFC1Temp LLCTrafoTemp LLCSecTemp LLCPriTemp CoolantTemp 
+	Provided port:
+ThermalOccupancyRate StDerating ThermalOccupancyRate ThermalOccupancyRate GainDerating 
