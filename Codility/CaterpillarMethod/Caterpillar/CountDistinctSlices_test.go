@@ -1,4 +1,4 @@
-package CountDistinctSlices
+package Caterpillar
 
 import (
 	"fmt"
@@ -36,30 +36,30 @@ func TestCaterpillar(t *testing.T) {
 // Test function sumResults that calculate the combination between index begin and end
 func TestSumResults(t *testing.T) {
 	assert := assert.New(t)
-	solution := sumResults(0, 1)
-	assert.Equal(solution, 3, "Returned value must be as the one expected")
+	CountDistinctSlices := sumResults(0, 1)
+	assert.Equal(CountDistinctSlices, 3, "Returned value must be as the one expected")
 
-	solution = sumResults(0, 0)
-	assert.Equal(solution, 1, "Returned value must be as the one expected")
+	CountDistinctSlices = sumResults(0, 0)
+	assert.Equal(CountDistinctSlices, 1, "Returned value must be as the one expected")
 
-	solution = sumResults(1, 1)
-	assert.Equal(solution, 1, "Returned value must be as the one expected")
+	CountDistinctSlices = sumResults(1, 1)
+	assert.Equal(CountDistinctSlices, 1, "Returned value must be as the one expected")
 }
 
 // test empty array
 func TestEmpty(t *testing.T) {
 	var input_empty []int
-	fmt.Printf(">>Test Zero: check empty array Solution(5, %v ) = %v\n", input_empty, Solution(5, input_empty))
-	solution := Solution(5, input_empty)
-	assert.Equal(t, solution, 0, "Returned value must be as the one expected")
+	fmt.Printf(">>Test Zero: check empty array CountDistinctSlices(5, %v ) = %v\n", input_empty, CountDistinctSlices(5, input_empty))
+	CountDistinctSlices := CountDistinctSlices(5, input_empty)
+	assert.Equal(t, CountDistinctSlices, 0, "Returned value must be as the one expected")
 }
 
 // test array with just two equal element
 func TestOne(t *testing.T) {
 	input := []int{1}
-	solution := Solution(6, input)
-	fmt.Printf(">>First test: check empty array Solution(5, %v ) = %v\n", input, solution)
-	assert.Equal(t, solution, 1, "Returned value must be as the one expected")
+	CountDistinctSlices := CountDistinctSlices(6, input)
+	fmt.Printf(">>First test: check empty array CountDistinctSlices(5, %v ) = %v\n", input, CountDistinctSlices)
+	assert.Equal(t, CountDistinctSlices, 1, "Returned value must be as the one expected")
 
 }
 
@@ -67,13 +67,13 @@ func TestOne(t *testing.T) {
 func TestDouble(t *testing.T) {
 	assert := assert.New(t)
 	input := []int{1, 2}
-	solution := Solution(6, input)
-	fmt.Printf(">>Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	solution := CountDistinctSlices(6, input)
+	fmt.Printf(">>Second test: check empty array CountDistinctSlices(5, %v ) = %v\n", input, solution)
 	assert.Equal(3, solution, "Returned value must be as the one expected")
 
 	input = []int{2, 2}
-	solution = Solution(2, input)
-	fmt.Printf(">>Second test: check empty array Solution(5, %v ) = %v\n", input, solution)
+	solution = CountDistinctSlices(2, input)
+	fmt.Printf(">>Second test: check empty array CountDistinctSlices(5, %v ) = %v\n", input, solution)
 	assert.Equal(2, solution, "Returned value must be as the one expected")
 
 }
@@ -81,8 +81,8 @@ func TestDouble(t *testing.T) {
 // Codility example tested
 func TestBaseCase(t *testing.T) {
 	input := []int{3, 4, 5, 5, 2}
-	solution := Solution(6, input)
-	fmt.Printf(">>Base test: check codility example array Solution(5, %v ) = %v\n", input, solution)
+	solution := CountDistinctSlices(6, input)
+	fmt.Printf(">>Base test: check codility example array CountDistinctSlices(5, %v ) = %v\n", input, solution)
 	assert.Equal(t, 9, solution, "Returned value must be as the one expected")
 }
 
@@ -90,16 +90,16 @@ func TestBaseCase(t *testing.T) {
 func TestFunctionalCase0(t *testing.T) {
 
 	input := []int{5, 4, 7, 5, 7, 9, 2}
-	solution := Solution(9, input)
-	fmt.Printf(">>Check array Solution(9, %v ) = %v\n", input, solution)
+	solution := CountDistinctSlices(9, input)
+	fmt.Printf(">>Check array CountDistinctSlices(9, %v ) = %v\n", input, solution)
 	assert.Equal(t, 18, solution, "Returned value must be as the one expected")
 }
 
 func TestFunctionalCase1(t *testing.T) {
 	// longer array with a different condition
 	input := []int{5, 4, 7, 5, 7, 9, 2, 3, 8, 7, 12, 2, 22, 15, 18, 2, 8}
-	solution := Solution(22, input)
-	fmt.Printf(">>Check array Solution(22, %v ) = %v\n", input, solution)
+	solution := CountDistinctSlices(22, input)
+	fmt.Printf(">>Check array CountDistinctSlices(22, %v ) = %v\n", input, solution)
 	assert.Equal(t, 75, solution, "Returned value must be as the one expected")
 
 }

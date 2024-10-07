@@ -1,4 +1,4 @@
-package CountDistinctSlices
+package Caterpillar
 
 type Caterpillar struct {
 	begin  int
@@ -16,7 +16,7 @@ func sumResults(begin int, end int) int {
 }
 
 // "main" function to evaluate all slices with unique element in an array
-func Solution(M int, A []int) int {
+func CountDistinctSlices(M int, A []int) int {
 	occurrencies := MappingOccurrency(A)
 	lenFullSlice := len(A) - 1
 	firstCaterpillar := CaterpillarSlice(A, occurrencies, 0, lenFullSlice)
