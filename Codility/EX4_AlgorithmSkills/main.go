@@ -300,6 +300,16 @@ func DisappearingPairs(S string) string {
 	return sol
 }
 
+// dfklasnkldmnakdnkl
+type Point2D struct {
+	X int
+	Y int
+}
+
+func CrossProduction(A Point2D, B Point2D, C Point2D) int {
+	return (B.X-A.X)*(C.Y-B.Y) - (B.Y-A.Y)*(C.X-B.X)
+}
+
 /* Calling function */
 func main() {
 	FirstUnique([]int{6, 4, 4, 6})
@@ -323,5 +333,15 @@ func main() {
 	fmt.Println(DisappearingPairs("AABBBBCBAABCBABCCCA"))
 	fmt.Println(DisappearingPairs("A"))
 	fmt.Println(DisappearingPairs(""))
+
+	var (
+		vertexA = Point2D{X: 1, Y: 1}
+		vertexB = Point2D{X: 2, Y: 3}
+		vertexC = Point2D{X: 4, Y: 4}
+		vertexD = Point2D{X: 4, Y: 2}
+	)
+	fmt.Println(CrossProduction(vertexA, vertexB, vertexC))
+	fmt.Println(CrossProduction(vertexB, vertexC, vertexD))
+	fmt.Println(CrossProduction(vertexA, vertexC, vertexD))
 
 }
