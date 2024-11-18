@@ -124,151 +124,43 @@ N is an integer within the range [1..100,000];
 each element of array A is an integer within the range [1..100,000,000].
 */
 
-type peakAndDepth struct {
-	listOfPeak  []int
-	listOfDepth []int
-}
-
-func myMax(a int, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}
-
-func myMin(a int, b int) int {
-	if a < b {
-		return a
-	} else {
-		return b
-	}
-}
-
-func FindLocalMax(A []int, pointOfInterest *peakAndDepth) {
-	var (
-		currentMin   int
-		previousPeak int
-		deltaH       int
-		oldDeltaH    int
-	)
-
-	pointOfInterest.listOfDepth = append(pointOfInterest.listOfDepth, 0)
-	for i, val := range A {
-		// find the list of local peaks
-		oldDeltaH = deltaH
-		deltaH = val - previousPeak
-		previousPeak = val
-
-		if deltaH < 0 && oldDeltaH > 0 {
-			pointOfInterest.listOfPeak = append(pointOfInterest.listOfPeak, i-1)
-			if len(pointOfInterest.listOfPeak) > 1 {
-				pointOfInterest.listOfDepth = append(pointOfInterest.listOfDepth, currentMin)
-			}
-			currentMin = i
-		}
-
-		if val < A[currentMin] {
-			currentMin = i
-		}
-	}
-
-	//last point in this way is not added to the peaks
-	if A[len(A)-1] > A[len(A)-2] {
-		pointOfInterest.listOfPeak = append(pointOfInterest.listOfPeak, len(A)-1)
-		pointOfInterest.listOfDepth = append(pointOfInterest.listOfDepth, currentMin)
-	}
-
-}
-
-func ClearPeaks(A []int, pointOfInterest *peakAndDepth) {
-	lastPeak := pointOfInterest.listOfPeak[0]
-	cleanedPeaks := make([]int, 0)
-	cleanedDepths := make([]int, 0)
-	minDepth := pointOfInterest.listOfDepth[0]
-	peakQueu := make([]int, 0)
-	for i, currPeak := range pointOfInterest.listOfPeak {
-
-		if A[minDepth] >= A[pointOfInterest.listOfDepth[i]] {
-			minDepth = pointOfInterest.listOfDepth[i]
-		}
-
-		if A[lastPeak] <= A[currPeak] {
-			cleanedPeaks = append(cleanedPeaks, currPeak)
-			cleanedDepths = append(cleanedDepths, minDepth)
-			minDepth = currPeak
-			lastPeak = currPeak
-			peakQueu = []int{}
-		} else {
-			peakQueu = append(peakQueu, currPeak)
-		}
-	}
-
-	j := len(peakQueu) - 1
-	app := []int{}
-	if j >= 0 {
-		lastPeak = peakQueu[j]
-		for j >= 0 {
-			if A[lastPeak] <= A[peakQueu[j]] {
-				gino := make([]int, 0)
-				gino = append(gino, peakQueu[j])
-				app = append(gino, app...)
-				lastPeak = peakQueu[j]
-			}
-			j--
-		}
-	}
-
-	cleanedPeaks = append(cleanedPeaks, app...)
-	pointOfInterest.listOfPeak = cleanedPeaks
-	pointOfInterest.listOfDepth = cleanedDepths
-}
-
-func Solution(A []int) int {
+func FloodDepth(A []int) int {
 	if len(A) <= 2 {
 		return 0
 	}
 	var (
 		pointOfInterest peakAndDepth
-		solution        int
+		highestDiff     int
 	)
 	pointOfInterest.listOfPeak = make([]int, 0)
 
+	// find the list of local peaks
 	FindLocalMax(A, &pointOfInterest)
 
 	if len(pointOfInterest.listOfPeak) > 0 {
+		//remove the peaks that do not brings to a "lake"
 		ClearPeaks(A, &pointOfInterest)
 		i := 0
 		j := 1
-
-		for j < len(pointOfInterest.listOfPeak) {
-			indexA := pointOfInterest.listOfPeak[i]
-			currentMin := pointOfInterest.listOfPeak[i]
-			for indexA < pointOfInterest.listOfPeak[j] {
-				if A[currentMin] > A[indexA] {
-					currentMin = indexA
-				}
-				indexA++
-			}
-			depth := myMin(A[pointOfInterest.listOfPeak[i]], A[pointOfInterest.listOfPeak[j]]) - A[currentMin]
-			//depth := myMin(A[pointOfInterest.listOfPeak[i]], A[pointOfInterest.listOfPeak[j]]) - A[pointOfInterest.listOfDepth[j]]
-			solution = myMax(depth, solution)
+		for j < len(pointOfInterest.listOfDepth) {
+			// check between to peaks which is the higher and subtract the hole
+			depth := myMin(A[pointOfInterest.listOfPeak[i]], A[pointOfInterest.listOfPeak[j]]) - A[pointOfInterest.listOfDepth[j]]
+			highestDiff = myMax(depth, highestDiff)
 			i++
 			j++
 
 		}
 	}
-	return solution
-
+	return highestDiff
 }
 
 func main() {
 	fmt.Println(LongestPassword("test 5 a0A pass007 ?xy1"))
 	fmt.Println(LongestPassword("apex911"))
 	fmt.Println(LongestPassword("1"))
-	fmt.Println(Solution([]int{1, 3, 2, 1, 2, 1, 5, 3, 3, 4, 2}), "expected", 2)
-	fmt.Println(Solution([]int{20, 4, 10, 1, 3, 5, 7}), "expected", 6)
-	fmt.Println(Solution([]int{1, 9, 8, 7, 4, 8, 7, 10, 31, 2}), "expected", 5)
-	fmt.Println(Solution([]int{3, 1, 10, 4, 20}), "expected", 6)
-	fmt.Println(Solution([]int{5000, 2000, 5000, 1, 3000, 4000, 5000, 1, 2, 2, 1, 2, 5000}), "expected", 4999)
+	fmt.Println(FloodDepth([]int{1, 3, 2, 1, 2, 1, 5, 3, 3, 4, 2}), "expected", 2)
+	fmt.Println(FloodDepth([]int{20, 4, 10, 1, 3, 5, 7}), "expected", 6)
+	fmt.Println(FloodDepth([]int{1, 9, 8, 7, 4, 8, 7, 10, 31, 2}), "expected", 5)
+	fmt.Println(FloodDepth([]int{3, 1, 10, 4, 20}), "expected", 6)
+	fmt.Println(FloodDepth([]int{5000, 2000, 5000, 1, 3000, 4000, 5000, 1, 2, 2, 1, 2, 5000}), "expected", 4999)
 }

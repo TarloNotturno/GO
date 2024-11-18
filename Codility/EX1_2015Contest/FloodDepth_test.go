@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,8 +43,6 @@ func TestClearPeaks(t *testing.T) {
 	pointOfInterest.listOfPeak = []int{}
 	pointOfInterest.listOfDepth = []int{}
 	FindLocalMax(A, &pointOfInterest)
-	fmt.Println("before", pointOfInterest.listOfPeak)
-	fmt.Println("before", pointOfInterest.listOfDepth)
 	ClearPeaks(A, &pointOfInterest)
 	assert.Equal(t, []int{1, 4, 6, 14, 16, 20}, pointOfInterest.listOfPeak)
 
@@ -53,16 +50,15 @@ func TestClearPeaks(t *testing.T) {
 	pointOfInterest.listOfPeak = []int{}
 	pointOfInterest.listOfDepth = []int{}
 	FindLocalMax(A, &pointOfInterest)
-	fmt.Println("before", pointOfInterest.listOfPeak)
-	fmt.Println("before", pointOfInterest.listOfDepth)
 	ClearPeaks(A, &pointOfInterest)
 	assert.Equal(t, []int{1, 11, 15}, pointOfInterest.listOfPeak)
 }
 
 func TestFunctional(t *testing.T) {
 
-	assert.Equal(t, 6, Solution([]int{20, 4, 10, 1, 3, 5, 7}))
-	assert.Equal(t, 5, Solution([]int{1, 9, 8, 7, 4, 8, 7, 10, 31, 2}))
-	assert.Equal(t, 6, Solution([]int{3, 1, 10, 4, 20}))
-	assert.Equal(t, 4999, Solution([]int{5000, 2000, 5000, 1, 3000, 4000, 5000, 1, 2, 2, 1, 2, 5000}))
+	assert.Equal(t, 6, FloodDepth([]int{20, 4, 10, 1, 3, 5, 7}))
+	assert.Equal(t, 5, FloodDepth([]int{1, 9, 8, 7, 4, 8, 7, 10, 31, 2}))
+	assert.Equal(t, 6, FloodDepth([]int{3, 1, 10, 4, 20}))
+	assert.Equal(t, 4999, FloodDepth([]int{5000, 2000, 5000, 1, 3000, 4000, 5000, 1, 2, 2, 1, 2, 5000}))
+	assert.Equal(t, 2, FloodDepth([]int{1, 3, 2, 1, 2, 1, 5, 3, 3, 4, 2}))
 }
