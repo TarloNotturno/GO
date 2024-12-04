@@ -19,17 +19,17 @@ type Point struct {
 
 // a*Y = m*b*X + c this allows line parallel to Y and X
 type StraightLine struct {
-	A bool
-	B bool
-	M float32
-	C float32
+	A bool    `json:"y present"`
+	B bool    `json:"x present"`
+	M float32 `json:"m"`
+	C float32 `json:"c"`
 }
 
 // Cartesian plan plot
 type CartesianPlot struct {
-	design []string
-	maxVal float32
-	step   float32
+	Design []string
+	MaxVal float32
+	Step   float32
 }
 
 func (line StraightLine) GetFunc() string {
@@ -67,21 +67,21 @@ func (line StraightLine) ObtainPlot() CartesianPlot {
 		modX = -modX
 	}
 	app := basefunction.MyMax(modX, modY)
-	plotRes.design = make([]string, 0)
-	plotRes.maxVal = 2 * app
+	plotRes.Design = make([]string, 0)
+	plotRes.MaxVal = 2 * app
 	magnify := float32(1)
 	incre := float32(5)
 	for magnify*app < incre {
 		magnify = 10 * magnify
 	}
-	plotRes.step = 1 / magnify
-	for yapp := -2 * app; yapp <= 2*app; yapp = yapp + plotRes.step {
+	plotRes.Step = 1 / magnify
+	for yapp := -2 * app; yapp <= 2*app; yapp = yapp + plotRes.Step {
 		y := float32(int(yapp*magnify)) / magnify
 		currentLine := ""
 		var currentPoint Point
 		currentPoint.X = float32(int((y-line.C)/line.M*magnify)) / magnify
 		currentPoint.Y = y
-		for xapp := -(2 * app); xapp <= 2*app; xapp = xapp + plotRes.step {
+		for xapp := -(2 * app); xapp <= 2*app; xapp = xapp + plotRes.Step {
 			x := float32((int(xapp * magnify))) / magnify
 			if x != currentPoint.X {
 				if x == 0 {
@@ -100,7 +100,7 @@ func (line StraightLine) ObtainPlot() CartesianPlot {
 				currentLine = currentLine + "*"
 			}
 		}
-		plotRes.design = append(plotRes.design, currentLine)
+		plotRes.Design = append(plotRes.Design, currentLine)
 	}
 	return plotRes
 }
@@ -111,7 +111,7 @@ func (line StraightLine) PrintLine() {
 }
 
 func (plotRes CartesianPlot) Plot() {
-	for _, val := range plotRes.design {
+	for _, val := range plotRes.Design {
 		fmt.Println(val)
 	}
 
