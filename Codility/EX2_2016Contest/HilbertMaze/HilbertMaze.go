@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-/*
+/* HilbertMaze https://app.codility.com/programmers/trainings/2/hilbert_maze/
 A halfling is searching for treasure hidden in a maze in the dwarfs' mine. He has a map of the maze and would like to find the shortest path to the treasure.
 
 The maze has a specific shape. It is placed on a square grid with M2 cells, where M = 2N+1+1 for some given size N. Each cell has coordinates (x, y), where 0 ≤ x, y < M, and can either be empty or contain a rock.
@@ -48,11 +48,6 @@ cells (A, B) and (C, D) do not contain rocks;
 the result will be an integer smaller than 2,147,483,647
 */
 
-const FULLSQUARE = 9638
-const EMPTYSQUARE = 9723
-const HALFLINGSTP = 9635
-const TREASURE = 9714 //9919
-
 type posMap struct {
 	x int
 	y int
@@ -68,6 +63,11 @@ type maze struct {
 }
 
 // additional function, just to print the maze layout
+const FULLSQUARE = 9638
+const EMPTYSQUARE = 9723
+const HALFLINGSTP = 9635
+const TREASURE = 9714
+
 func (inputMaze maze) printMaze() {
 	N := inputMaze.N
 	for y := N; y >= 0; y-- {
@@ -117,10 +117,12 @@ func (inputMaze *maze) updateMap() {
 			}
 		}
 	}
+	// add the wall at the intersection of new map pieces
 	outputMap.mazeMap[posMap{x: N, y: N + 1}] = 1
 	outputMap.mazeMap[posMap{x: 1, y: N}] = 1
 	outputMap.mazeMap[posMap{x: 2*N - 1, y: N}] = 1
 	inputMaze.N = 2 * N
+	// copy the obtained maps to the maze
 	inputMaze.mazeMap = outputMap.mazeMap
 	inputMaze.distances = outputMap.distances
 }
@@ -142,7 +144,29 @@ type path struct {
 	lenght     int
 }
 
-//func (M *maze) upDatePath
+// function that check if i can go in a direction and update the path with the new step if possible
+func (M *maze) upDatePath(xNew int, yNew int, currentLenght int, pathCovered *[]path, minPath *int) {
+	//if we are still inside the maze with the index
+	if xNew >= 0 && yNew >= 0 && xNew <= M.N && yNew <= M.N &&
+		// and the next step was a not visited empty space
+		(M.mazeMap[posMap{x: xNew, y: yNew}] == 0 ||
+			// or the treasure
+			M.mazeMap[posMap{x: xNew, y: yNew}] == 3 ||
+			// or an empty space visited with a longer path
+			(M.mazeMap[posMap{x: xNew, y: yNew}] == 2 && M.distances[posMap{x: xNew, y: yNew}] > currentLenght)) {
+		// if next step is not the treasure add it to the queu
+		if (M.mazeMap[posMap{x: xNew, y: yNew}] != 3) {
+			*pathCovered = append(*pathCovered, path{currentPos: posMap{x: xNew, y: yNew}, lenght: currentLenght + 1})
+			M.mazeMap[posMap{x: xNew, y: yNew}] = 2
+			M.distances[posMap{x: xNew, y: yNew}] = currentLenght
+		} else {
+			//reached the tresure in next step, check if the path is the min one
+			if *minPath > currentLenght {
+				*minPath = currentLenght + 1
+			}
+		}
+	}
+}
 
 // function to find all the path and the optimal one
 func (M maze) move(start *posMap, goalX posMap) int {
@@ -160,76 +184,20 @@ func (M maze) move(start *posMap, goalX posMap) int {
 				minPath = currentLenght
 			}
 		} else {
-			// find direction
 			// for each direction i check if the corresponding step is free or if it was visited with a longer path
+
 			//check left
-			if halflingPos.x > 0 &&
-				(M.mazeMap[posMap{x: halflingPos.x - 1, y: halflingPos.y}] == 0 ||
-					M.mazeMap[posMap{x: halflingPos.x - 1, y: halflingPos.y}] == 3 ||
-					(M.mazeMap[posMap{x: halflingPos.x - 1, y: halflingPos.y}] == 2 && M.distances[posMap{x: halflingPos.x - 1, y: halflingPos.y}] > currentLenght)) {
-				//i can go left
-				if (M.mazeMap[posMap{x: halflingPos.x - 1, y: halflingPos.y}] != 3) {
-					pathCovered = append(pathCovered, path{currentPos: posMap{x: halflingPos.x - 1, y: halflingPos.y}, lenght: currentLenght + 1})
-					M.mazeMap[posMap{x: halflingPos.x - 1, y: halflingPos.y}] = 2
-					M.distances[posMap{x: halflingPos.x - 1, y: halflingPos.y}] = currentLenght
-				} else {
-					//reached the tresure in next step, check if the path is the min one
-					if minPath > currentLenght {
-						minPath = currentLenght + 1
-					}
-				}
-			}
+			M.upDatePath(halflingPos.x-1, halflingPos.y, currentLenght, &pathCovered, &minPath)
+
 			// check right
-			if halflingPos.x < M.N &&
-				(M.mazeMap[posMap{x: halflingPos.x + 1, y: halflingPos.y}] == 0 ||
-					M.mazeMap[posMap{x: halflingPos.x + 1, y: halflingPos.y}] == 3 ||
-					(M.mazeMap[posMap{x: halflingPos.x + 1, y: halflingPos.y}] == 2 && M.distances[posMap{x: halflingPos.x + 1, y: halflingPos.y}] > currentLenght)) {
-				//should go right
-				if (M.mazeMap[posMap{x: halflingPos.x + 1, y: halflingPos.y}] != 3) {
-					pathCovered = append(pathCovered, path{currentPos: posMap{x: halflingPos.x + 1, y: halflingPos.y}, lenght: currentLenght + 1})
-					M.mazeMap[posMap{x: halflingPos.x + 1, y: halflingPos.y}] = 2
-					M.distances[posMap{x: halflingPos.x + 1, y: halflingPos.y}] = currentLenght
-				} else {
-					//reached the tresure in next step, check if the path is the min one
-					if minPath > currentLenght {
-						minPath = currentLenght + 1
-					}
-				}
-			}
+			M.upDatePath(halflingPos.x+1, halflingPos.y, currentLenght, &pathCovered, &minPath)
+
 			//check down
-			if halflingPos.y > 0 &&
-				(M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y - 1}] == 0 ||
-					M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y - 1}] == 3 ||
-					(M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y - 1}] == 2 && M.distances[posMap{x: halflingPos.x, y: halflingPos.y - 1}] > currentLenght)) {
-				//i can go down
-				if (M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y - 1}] != 3) {
-					pathCovered = append(pathCovered, path{currentPos: posMap{x: halflingPos.x, y: halflingPos.y - 1}, lenght: currentLenght + 1})
-					M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y - 1}] = 2
-					M.distances[posMap{x: halflingPos.x, y: halflingPos.y - 1}] = currentLenght
-				} else {
-					//reached the tresure in next step, check if the path is the min one
-					if minPath > currentLenght {
-						minPath = currentLenght + 1
-					}
-				}
-			}
+			M.upDatePath(halflingPos.x, halflingPos.y-1, currentLenght, &pathCovered, &minPath)
+
 			//check up
-			if halflingPos.y < M.N &&
-				(M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y + 1}] == 0 ||
-					M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y + 1}] == 3 ||
-					(M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y + 1}] == 2 && M.distances[posMap{x: halflingPos.x, y: halflingPos.y + 1}] > currentLenght)) {
-				//i can go up
-				if (M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y + 1}] != 3) {
-					pathCovered = append(pathCovered, path{currentPos: posMap{x: halflingPos.x, y: halflingPos.y + 1}, lenght: currentLenght + 1})
-					M.mazeMap[posMap{x: halflingPos.x, y: halflingPos.y + 1}] = 2
-					M.distances[posMap{x: halflingPos.x, y: halflingPos.y + 1}] = currentLenght
-				} else {
-					//reached the tresure in next step, check if the path is the min one
-					if minPath > currentLenght {
-						minPath = currentLenght + 1
-					}
-				}
-			}
+			M.upDatePath(halflingPos.x, halflingPos.y+1, currentLenght, &pathCovered, &minPath)
+
 		}
 		//remove the current step from queu. If no new path were found it will be deleted and moved back to an old element of the queu
 		app := pathCovered[:endOfPath]
@@ -324,9 +292,11 @@ func Solution(N int, A int, B int, C int, D int) int {
 	}
 	halflingPos := posMap{x: A, y: B}
 	treasurePos := posMap{x: C, y: D}
+	//set the treasure position and halfling starting point
 	labyrinth.mazeMap[halflingPos] = 2
 	labyrinth.mazeMap[treasurePos] = 3
 	labyrinth.printMaze()
+	//find the path
 	solution := labyrinth.move(&halflingPos, treasurePos)
 	fmt.Println(solution)
 	return solution
