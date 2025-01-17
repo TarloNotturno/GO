@@ -1,5 +1,13 @@
 package MySQRT
 
+func roundFloat(val float32, precision float32) float32 {
+	ratio := float32(1.0)
+	for ratio < 1/(10*precision) {
+		ratio = ratio * 10
+	}
+	return float32(int(val*ratio)) / ratio
+}
+
 func MyRad2(input int, tolerance float32) float32 {
 	start := float32(0)
 	end := float32(input)
@@ -15,5 +23,5 @@ func MyRad2(input int, tolerance float32) float32 {
 		solution = (start + end) / 2
 		app = solution * solution
 	}
-	return solution
+	return roundFloat(solution, tolerance)
 }

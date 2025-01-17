@@ -1,9 +1,9 @@
 package PrintCoditioned
 
-import "fmt"
+import "strconv"
 
 type Checker interface {
-	printer(input int) bool
+	printer(input int) (string, bool)
 }
 
 type CheckValues struct {
@@ -15,20 +15,22 @@ type Divisible struct {
 	CheckValue int
 }
 
-func (v *Divisible) printer(input int) bool {
+func (v *Divisible) printer(input int) (string, bool) {
+	output := ""
 	if input%v.CheckValue == 0 && input != 0 {
-		fmt.Printf("%v", v.Message)
-		return true
+		output = v.Message
+		return output, true
 	}
-	return false
+	return output, false
 }
 
 type PrimeCheckValue struct {
 	Message string
 }
 
-func (p *PrimeCheckValue) printer(input int) bool {
+func (p *PrimeCheckValue) printer(input int) (string, bool) {
 	primeNumber := true
+	output := ""
 	if input%2 == 0 && input != 2 {
 		primeNumber = false
 	}
@@ -38,27 +40,29 @@ func (p *PrimeCheckValue) printer(input int) bool {
 		}
 	}
 	if primeNumber {
-		fmt.Printf("%v", p.Message)
-		return true
+		output = p.Message
+		return output, true
 	}
-	return false
+	return output, false
 }
 
-func (c *CheckValues) ExecuteAllCheckValues(maxNCheckValues int) {
+func (c *CheckValues) ExecuteAllCheckValues(maxNCheckValues int) (output string) {
+	output = ""
+	var app1 string
+	var app2 bool
 	for i := 0; i <= maxNCheckValues; i++ {
 		printed := false
 		for _, currentCheckValue := range c.ListOfChecks {
 			if !printed {
-
-				printed = printed || currentCheckValue.printer(i)
+				app1, app2 = currentCheckValue.printer(i)
+				printed = printed || app2
 			}
 		}
 		if !printed {
-			fmt.Printf("%v,", i)
+			output = output + strconv.Itoa(i) + ","
 		} else {
-			fmt.Printf(",")
+			output = output + app1 + ","
 		}
 	}
-	fmt.Println()
-
+	return
 }
