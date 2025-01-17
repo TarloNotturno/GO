@@ -27,4 +27,5 @@ func main() {
 	fmt.Println("3.ArrayRecovery")
 	fmt.Println("	", Solution([]int{0, 2, 2}, 4), "expected 3")
 	fmt.Println("	", Solution([]int{0, 3, 5, 6}, 10), "expected 4")
+	fmt.Println("	", Solution([]int{0, 0}, 100000), "expected 49965")
 }
