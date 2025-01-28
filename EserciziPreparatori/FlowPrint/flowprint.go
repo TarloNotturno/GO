@@ -19,8 +19,8 @@ type coordinate struct {
 
 func FillTheBoard(xIn int, yIn int, board [][]string) {
 	input := coordinate{x: xIn, y: yIn}
-	fmt.Println("board before flow")
-	printBoard(board)
+	//fmt.Println("board before flow")
+	//printBoard(board)
 	if input.x < len(board[0]) && input.x >= 0 && input.y < len(board) && input.y >= 0 {
 		if board[input.y][input.x] == "□" {
 			queu := []coordinate{input}
@@ -53,7 +53,7 @@ func FillTheBoard(xIn int, yIn int, board [][]string) {
 			}
 		}
 	}
-	fmt.Printf("\n\n")
-	fmt.Println("board after flow")
-	printBoard(board)
+	//fmt.Printf("\n\n")
+	//fmt.Println("board after flow")
+	//printBoard(board)
 }

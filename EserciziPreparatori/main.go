@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
-
 	"main.go/FlowPrint"
 	"main.go/MySQRT"
 	"main.go/PrintCoditioned"
+	readfile "main.go/ReadFile"
 )
 
 func main() {
@@ -16,10 +15,10 @@ func main() {
 	listToCheckValue.ListOfChecks[2] = &PrintCoditioned.Divisible{Message: "baa", CheckValue: 5}
 	listToCheckValue.ListOfChecks[3] = &PrintCoditioned.Divisible{Message: "two", CheckValue: 2}
 	listToCheckValue.ListOfChecks[4] = &PrintCoditioned.Divisible{Message: "APEX LEGEND", CheckValue: 7}
-	fmt.Println(listToCheckValue.ExecuteAllCheckValues(100))
-	fmt.Println(MySQRT.MyRad2(100, 0.0001))
-	fmt.Println(MySQRT.MyRad2(2, 0.0001))
-	fmt.Println(MySQRT.MyRad2(25, 0.00001))
+	/*fmt.Println(*/ listToCheckValue.ExecuteAllCheckValues(100) //)
+	/*fmt.Println(*/ MySQRT.MyRad2(100, 0.0001) //)
+	/*fmt.Println(*/ MySQRT.MyRad2(2, 0.0001) //)
+	/*fmt.Println(*/ MySQRT.MyRad2(25, 0.00001) //)
 
 	board := [][]string{
 		{"■", "□", "□", "□", "■", "■"},
@@ -40,5 +39,5 @@ func main() {
 		{"■", "■", "□", "□", "□"},
 		{"■", "■", "□", "□", "□"}}
 	FlowPrint.FillTheBoard(4, 6, board)
-
+	readfile.OpenAndDivideFile(4)
 }
