@@ -27,12 +27,14 @@ import (
 
 const BYTESLICE = 1000
 
+// CREATE A STRUCT FOR INFO RELATED TO A READED LINE, WILL BE SENT THROUGH CH
 type sentData struct {
 	lineReaded    string
 	wordReaded    []string
 	orderOfThread int64
 }
 
+// INPUT STRUCT FOR THE THREAD FUNCTIONS
 type fileReadInput struct {
 	scanner         *bufio.Scanner
 	chanSem         chan bool
@@ -62,27 +64,28 @@ func (input fileReadInput) mergeInfo(keepRead *bool, occurrences map[string]int,
 	unorderedString := make(map[int64]string)
 	lastThread := int64(0)
 	for {
+		// check if the file is totaly read
 		*keepRead = <-input.fileNotFinished
-		if *keepRead {
-			text := <-input.currentLine
+		// obtain the data related to the last string read
+		text := <-input.currentLine
 
-			unorderedString[text.orderOfThread] = text.lineReaded
-			lastThread = myMax(lastThread, text.orderOfThread)
-			for _, currentWord := range text.wordReaded {
-				if value, ok := occurrences[currentWord]; ok {
-					occurrences[currentWord] = value + 1
-				} else {
-					occurrences[currentWord] = 1
-				}
+		unorderedString[text.orderOfThread] = text.lineReaded
+		lastThread = myMax(lastThread, text.orderOfThread)
+		for _, currentWord := range text.wordReaded {
+			if value, ok := occurrences[currentWord]; ok {
+				occurrences[currentWord] = value + 1
+			} else {
+				occurrences[currentWord] = 1
 			}
-		} else {
+		}
+		if !*keepRead {
 			goto end
 		}
 	}
 end:
 	{
 		//copy string to the output
-		for i := int64(0); i < lastThread; i++ {
+		for i := int64(0); i <= lastThread; i++ {
 			*fullTextCopy = *fullTextCopy + unorderedString[i]
 		}
 		fmt.Println(*fullTextCopy)
@@ -91,23 +94,24 @@ end:
 
 func (input fileReadInput) readLine(file *os.File) {
 	defer input.wg.Done()
-	//fileToBeRead := true
-	text := make([]byte, input.dimByte)
+	// text is the variable reading BYTESLICE byte
+	text := make([]byte, BYTESLICE)
+	// check if the file is finished reading and obtain the line
 	var endOfFile error
 	_, endOfFile = file.ReadAt(text, int64(input.deltaRead*BYTESLICE))
 
-	fileToBeRead := endOfFile == nil && int64(input.deltaRead*BYTESLICE) > 0
 	readedLine := string(text)
+	fileToBeRead := endOfFile == nil && readedLine != ""
 
+	// SEND IF THE FILE IS ENDED TO mergeInfo THREAD ###############################################
 	input.fileNotFinished <- fileToBeRead
-	if fileToBeRead {
-		textSplit := strings.Split(readedLine, " ")
-		input.currentLine <- sentData{
-			lineReaded:    readedLine,
-			wordReaded:    textSplit,
-			orderOfThread: input.deltaRead}
-	}
-
+	textSplit := strings.Split(readedLine, " ")
+	// SEND THE LINE INFO TO mergeInfo THREAD ######################################################
+	input.currentLine <- sentData{
+		lineReaded:    readedLine,
+		wordReaded:    textSplit,
+		orderOfThread: input.deltaRead}
+	// EMPTY ONE SEMAPHORE SLOT CAUSE THE THREAD IS DONE ###########################################
 	<-input.chanSem
 
 }
@@ -116,30 +120,36 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 	is equal to 4 as per exercise request */
 
 	//open file
-	file, err := os.Open("ManzoniShort.txt")
+	file, err := os.Open("Manzoni.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	app, _ := file.Stat()
+	// find the dimension of file in order to find later when the thread executed is the last one needed,
+	// its execution will finish the read of the file
 	dimensionFile := app.Size()
 
+	// select how many read thread execute maximum
 	nThreads := myMin(myMax(5, int64(dimensionFile/BYTESLICE)), maxNumbThreads)
-
-	//textDiv := make([]string, nThreads)
-
+	// create a buffer to read the file
 	scanner := bufio.NewScanner(file)
 
+	// variable reporting the occurences of words inside the file read
 	occurrences := make(map[string]int, nThreads)
 
+	// two wait group, one for read one for parse the file
 	var wgRead sync.WaitGroup
 	var wgMerge sync.WaitGroup
-	//chanRead := make(chan string, nThreads)
+
+	// chanSem IS THE CHANNEL TO STOP THE EXECUTION OF MORE THREAD THAN REQUESTED ########################
 	chanSem := make(chan bool, nThreads)
+	// channel variable reporting if we finished read the file
 	fileNotFinished := make(chan bool)
 	fullText := ""
+	// variable reporting if the exchange of fileNotFinished report an end of file
 	keepRead := true
 
-	// obtain slice of file
+	// line read by the read thread
 	currentLine := make(chan sentData)
 
 	i := int64(0)
@@ -151,26 +161,31 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 		wg:              &wgMerge}
 
 	wgMerge.Add(1)
+	// MERGE INFO READ THE INFO SENT FROM readLine threads and once the file is full read merge all lines
+	// in a variable reporting the full text "fullText", on occurrences finds all the word occurrencies in
+	// the text file
 	go inputMerge.mergeInfo(&keepRead, occurrences, &fullText)
-
+	var inputRead fileReadInput
 	for keepRead {
 		dimByte := myMin(myMax(dimensionFile-i*BYTESLICE, 0), BYTESLICE)
-		//if dimByte > 0 {
-		wgRead.Add(1)
-		chanSem <- true
+		// IF THE FILE IS FULLY READ DO NOT ADD NEW THREAD ##########################################
+		// else add a read thread once we had an ok from semaphore max number of thread
+		if dimensionFile-i*BYTESLICE > 0 {
+			wgRead.Add(1)
+			chanSem <- true
 
-		inputRead := fileReadInput{
-			scanner:         scanner,
-			chanSem:         chanSem,
-			fileNotFinished: fileNotFinished,
-			currentLine:     currentLine,
-			wg:              &wgRead,
-			dimByte:         dimByte,
-			deltaRead:       i}
+			inputRead = fileReadInput{
+				scanner:         scanner,
+				chanSem:         chanSem,
+				fileNotFinished: fileNotFinished,
+				currentLine:     currentLine,
+				wg:              &wgRead,
+				dimByte:         dimByte,
+				deltaRead:       i}
 
-		go inputRead.readLine(file)
-		//}
-		i++
+			i++
+			go inputRead.readLine(file)
+		}
 	}
 	wgRead.Wait()
 	close(currentLine)
@@ -180,5 +195,8 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 	file.Close()
 
 	fmt.Println(fullText)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println(occurrences)
 
 }
