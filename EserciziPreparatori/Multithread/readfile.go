@@ -18,7 +18,6 @@ Puoi utilizzare qualsiasi linguaggio di programmazione che supporta il multithre
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -36,9 +35,10 @@ type sentData struct {
 
 // INPUT STRUCT FOR THE THREAD FUNCTIONS
 type fileReadInput struct {
-	scanner         *bufio.Scanner
-	chanSem         chan bool
-	fileNotFinished chan bool
+	scanner *bufio.Scanner
+	chanSem chan bool
+	//fileNotFinished chan bool
+	fileNotFinished *bool
 	currentLine     chan sentData
 	wg              *sync.WaitGroup
 	dimByte         int64
@@ -59,16 +59,18 @@ func myMin(a, b int64) int64 {
 	return b
 }
 
-func (input fileReadInput) mergeInfo(keepRead *bool, occurrences map[string]int, fullTextCopy *string) {
+func (input fileReadInput) mergeInfo(occurrences map[string]int, fullTextCopy *string) {
 	defer input.wg.Done()
 	unorderedString := make(map[int64]string)
 	lastThread := int64(0)
 	for {
 		// check if the file is totaly read
-		*keepRead = <-input.fileNotFinished
+		//*keepRead = <-input.fileNotFinished
 		// obtain the data related to the last string read
-		text := <-input.currentLine
-
+		text, ok := <-input.currentLine
+		if !ok {
+			goto end
+		}
 		unorderedString[text.orderOfThread] = text.lineReaded
 		lastThread = myMax(lastThread, text.orderOfThread)
 		for _, currentWord := range text.wordReaded {
@@ -78,9 +80,9 @@ func (input fileReadInput) mergeInfo(keepRead *bool, occurrences map[string]int,
 				occurrences[currentWord] = 1
 			}
 		}
-		if !*keepRead {
-			goto end
-		}
+		//if !*keepRead {
+		//	goto end
+		//}
 	}
 end:
 	{
@@ -88,7 +90,6 @@ end:
 		for i := int64(0); i <= lastThread; i++ {
 			*fullTextCopy = *fullTextCopy + unorderedString[i]
 		}
-		fmt.Println(*fullTextCopy)
 	}
 }
 
@@ -101,10 +102,11 @@ func (input fileReadInput) readLine(file *os.File) {
 	_, endOfFile = file.ReadAt(text, int64(input.deltaRead*BYTESLICE))
 
 	readedLine := string(text)
-	fileToBeRead := endOfFile == nil && readedLine != ""
-
+	//fileToBeRead := endOfFile == nil && readedLine != ""
+	*input.fileNotFinished = endOfFile == nil && readedLine != ""
 	// SEND IF THE FILE IS ENDED TO mergeInfo THREAD ###############################################
-	input.fileNotFinished <- fileToBeRead
+	//input.fileNotFinished <- fileToBeRead
+
 	textSplit := strings.Split(readedLine, " ")
 	// SEND THE LINE INFO TO mergeInfo THREAD ######################################################
 	input.currentLine <- sentData{
@@ -120,7 +122,7 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 	is equal to 4 as per exercise request */
 
 	//open file
-	file, err := os.Open("Manzoni.txt")
+	file, err := os.Open("inputFile/Manzoni.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -143,11 +145,9 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 
 	// chanSem IS THE CHANNEL TO STOP THE EXECUTION OF MORE THREAD THAN REQUESTED ########################
 	chanSem := make(chan bool, nThreads)
-	// channel variable reporting if we finished read the file
-	fileNotFinished := make(chan bool)
+	// variable reporting if we finished read the file
+	fileNotFinished := true
 	fullText := ""
-	// variable reporting if the exchange of fileNotFinished report an end of file
-	keepRead := true
 
 	// line read by the read thread
 	currentLine := make(chan sentData)
@@ -156,7 +156,7 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 
 	inputMerge := fileReadInput{
 		scanner:         scanner,
-		fileNotFinished: fileNotFinished,
+		fileNotFinished: &fileNotFinished,
 		currentLine:     currentLine,
 		wg:              &wgMerge}
 
@@ -164,9 +164,9 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 	// MERGE INFO READ THE INFO SENT FROM readLine threads and once the file is full read merge all lines
 	// in a variable reporting the full text "fullText", on occurrences finds all the word occurrencies in
 	// the text file
-	go inputMerge.mergeInfo(&keepRead, occurrences, &fullText)
+	go inputMerge.mergeInfo(occurrences, &fullText)
 	var inputRead fileReadInput
-	for keepRead {
+	for fileNotFinished {
 		dimByte := myMin(myMax(dimensionFile-i*BYTESLICE, 0), BYTESLICE)
 		// IF THE FILE IS FULLY READ DO NOT ADD NEW THREAD ##########################################
 		// else add a read thread once we had an ok from semaphore max number of thread
@@ -177,14 +177,13 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 			inputRead = fileReadInput{
 				scanner:         scanner,
 				chanSem:         chanSem,
-				fileNotFinished: fileNotFinished,
+				fileNotFinished: &fileNotFinished,
 				currentLine:     currentLine,
 				wg:              &wgRead,
 				dimByte:         dimByte,
 				deltaRead:       i}
-
-			i++
 			go inputRead.readLine(file)
+			i++
 		}
 	}
 	wgRead.Wait()
@@ -194,9 +193,6 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 
 	file.Close()
 
-	fmt.Println(fullText)
-	fmt.Println()
-	fmt.Println()
-	fmt.Println(occurrences)
+	//fmt.Println(occurrences)
 
 }

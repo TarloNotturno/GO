@@ -41,5 +41,6 @@ func main() {
 	FlowPrint.FillTheBoard(4, 6, board)
 	multithread.OpenAndDivideFile(4)
 	multithread.Execute_Concurrency(100)
+	multithread.MyRead("D:/Sviluppo/GO/EserciziPreparatori/inputFile", 3)
 
 }
