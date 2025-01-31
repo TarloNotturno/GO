@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"main.go/MySQRT"
 	"main.go/PrintCoditioned"
+	"main.go/multithread"
 )
 
 func TestPrinter(t *testing.T) {
@@ -23,4 +24,9 @@ func TestPrinter(t *testing.T) {
 
 	assert.Equal(t, listToCheckValue.ExecuteAllCheckValues(14), "0,PRIME NUMBER,PRIME NUMBER,PRIME NUMBER,two,PRIME NUMBER,boo,PRIME NUMBER,two,boo,baa,PRIME NUMBER,boo,PRIME NUMBER,two,")
 
+}
+
+func testCounter(t *testing.T) {
+	assert.Equal(t, 100000, multithread.Execute_Concurrency(100))
+	assert.Equal(t, 1000000, multithread.Execute_Concurrency(1000))
 }

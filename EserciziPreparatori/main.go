@@ -4,7 +4,7 @@ import (
 	"main.go/FlowPrint"
 	"main.go/MySQRT"
 	"main.go/PrintCoditioned"
-	readfile "main.go/ReadFile"
+	"main.go/multithread"
 )
 
 func main() {
@@ -39,5 +39,7 @@ func main() {
 		{"■", "■", "□", "□", "□"},
 		{"■", "■", "□", "□", "□"}}
 	FlowPrint.FillTheBoard(4, 6, board)
-	readfile.OpenAndDivideFile(4)
+	multithread.OpenAndDivideFile(4)
+	multithread.Execute_Concurrency(100)
+
 }

@@ -1,4 +1,4 @@
-package readfile
+package multithread
 
 /*
 Supponiamo di avere un file di testo di grandi dimensioni che contiene migliaia o milioni di righe. Il tuo compito è scrivere un programma che legga il contenuto di questo file in parallelo utilizzando il multithreading per migliorare le prestazioni.
