@@ -1,46 +1,12 @@
 package main
 
-import (
-	"main.go/FlowPrint"
-	"main.go/MySQRT"
-	"main.go/PrintCoditioned"
-	"main.go/multithread"
-)
-
 func main() {
-	var listToCheckValue PrintCoditioned.CheckValues
-	listToCheckValue.ListOfChecks = make([]PrintCoditioned.Checker, 5)
-	listToCheckValue.ListOfChecks[0] = &PrintCoditioned.PrimeCheckValue{Message: "PRIME NUMBER"}
-	listToCheckValue.ListOfChecks[1] = &PrintCoditioned.Divisible{Message: "boo", CheckValue: 3}
-	listToCheckValue.ListOfChecks[2] = &PrintCoditioned.Divisible{Message: "baa", CheckValue: 5}
-	listToCheckValue.ListOfChecks[3] = &PrintCoditioned.Divisible{Message: "two", CheckValue: 2}
-	listToCheckValue.ListOfChecks[4] = &PrintCoditioned.Divisible{Message: "APEX LEGEND", CheckValue: 7}
-	/*fmt.Println(*/ listToCheckValue.ExecuteAllCheckValues(100) //)
-	/*fmt.Println(*/ MySQRT.MyRad2(100, 0.0001) //)
-	/*fmt.Println(*/ MySQRT.MyRad2(2, 0.0001) //)
-	/*fmt.Println(*/ MySQRT.MyRad2(25, 0.00001) //)
-
-	board := [][]string{
-		{"■", "□", "□", "□", "■", "■"},
-		{"■", "□", "□", "■", "□", "□"},
-		{"■", "■", "■", "□", "■", "■"},
-		{"■", "□", "□", "■", "□", "□"},
-		{"■", "□", "□", "□", "□", "■"}}
-	FlowPrint.FillTheBoard(2, 4, board)
-	FlowPrint.FillTheBoard(1, 1, board)
-
-	board = [][]string{
-		{"■", "□", "■", "□", "■"},
-		{"■", "□", "□", "■", "□"},
-		{"■", "■", "■", "□", "■"},
-		{"■", "□", "□", "■", "□"},
-		{"■", "□", "■", "□", "□"},
-		{"■", "□", "■", "□", "□"},
-		{"■", "■", "□", "□", "□"},
-		{"■", "■", "□", "□", "□"}}
-	FlowPrint.FillTheBoard(4, 6, board)
-	multithread.OpenAndDivideFile(4)
-	multithread.Execute_Concurrency(100)
-	multithread.MyRead("D:/Sviluppo/GO/EserciziPreparatori/inputFile", 3)
+	printResult := true // boolean disabling the print of calculated results
+	// base exercise:
+	// execute conditioned printing
+	// fill a table given a point in the table
+	baseExercise(printResult)
+	// exercises on multithreads
+	threadExercise(4, 100, 2)
 
 }
