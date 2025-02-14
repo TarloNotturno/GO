@@ -18,6 +18,7 @@ Puoi utilizzare qualsiasi linguaggio di programmazione che supporta il multithre
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -106,8 +107,38 @@ func (input fileReadInput) readLine(file *os.File) {
 	*input.fileNotFinished = endOfFile == nil && readedLine != ""
 	// SEND IF THE FILE IS ENDED TO mergeInfo THREAD ###############################################
 	//input.fileNotFinished <- fileToBeRead
+	textSplit := strings.Split(readedLine, ";")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "-")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, ".")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "?")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, ".")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "?")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, ",")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "!")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "\"")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "'")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "\\n")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "\\r")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "’")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "«")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, "»")
+	readedLine = strings.Join(textSplit, " ")
+	textSplit = strings.Split(readedLine, " ")
 
-	textSplit := strings.Split(readedLine, " ")
 	// SEND THE LINE INFO TO mergeInfo THREAD ######################################################
 	input.currentLine <- sentData{
 		lineReaded:    readedLine,
@@ -118,7 +149,7 @@ func (input fileReadInput) readLine(file *os.File) {
 
 }
 
-func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
+func OpenAndDivideFile(maxNumbThreads int64, printThreadsResult bool) { /* max number of thread input
 	is equal to 4 as per exercise request */
 
 	//open file
@@ -192,7 +223,11 @@ func OpenAndDivideFile(maxNumbThreads int64) { /* max number of thread input
 	wgMerge.Wait()
 
 	file.Close()
+	if printThreadsResult {
+		for key, val := range occurrences {
+			fmt.Println(key, " : ", val)
+		}
 
-	//fmt.Println(occurrences)
+	}
 
 }

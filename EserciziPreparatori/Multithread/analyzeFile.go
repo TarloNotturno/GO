@@ -2,6 +2,7 @@ package multithread
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/fs"
 	"log"
 	"os"
@@ -91,7 +92,7 @@ func reader(root string, fileToCheck string, currentResult chan fileData, semaph
 
 }
 
-func MyRead(root string, maxNumThread int) []byte {
+func MyRead(root string, maxNumThread int, printThreadsResult bool) []byte {
 
 	listOfFile := []string{}
 	fileSystem := os.DirFS(root)
@@ -117,5 +118,12 @@ func MyRead(root string, maxNumThread int) []byte {
 	if str, errM = json.Marshal(toExport); errM != nil {
 		panic(errM)
 	}
+
+	if printThreadsResult {
+		for _, result := range listOfResults {
+			fmt.Println("number of word in file ", result.NomeFile, ":", result.NumeroParole)
+		}
+	}
+
 	return str
 }
