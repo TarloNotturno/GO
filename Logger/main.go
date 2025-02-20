@@ -5,14 +5,14 @@ import (
 
 func main() {
 
-	windowInfo, err0 := mylogger.NewLogger("Info")
+	windowLog, err0 := mylogger.NewLogger()
 	if err0 != nil {
 		panic(err0)
 	}
-	windowErr, err01 := mylogger.NewLogger("Err")
-	if err0 != nil {
-		panic(err01)
-	}
+	//windowErr, err01 := mylogger.NewLogger()
+	//if err0 != nil {
+	//	panic(err01)
+	//}
 
 	//list of log variable writing on a file
 	destinationfile, openingErr := mylogger.OpenFile("log.txt") //open file
@@ -21,25 +21,25 @@ func main() {
 		panic(openingErr)
 	}
 
-	fileErr, err2 := mylogger.NewLogger("Error", destinationfile)
+	fileLog, err2 := mylogger.NewLogger(destinationfile)
 	if err2 != nil {
 		panic(err2)
 	}
 
-	fileInfo, err1 := mylogger.NewLogger("Info", destinationfile)
-	if err1 != nil {
-		panic(err1)
-	}
+	//fileInfo, err1 := mylogger.NewLogger("Info", destinationfile)
+	//if err1 != nil {
+	//	panic(err1)
+	//}
 
 	//logging to windows
-	windowInfo.MyLog("This is a test message")
-	windowInfo.MyLog("This is another test message")
-	windowErr.MyLog("This is an error message")
+	windowLog.LogInfo("This is a test message")
+	windowLog.LogInfo("This is another test message")
+	windowLog.LogError("This is an error message")
 
 	//logging to file
-	fileInfo.MyLog("This is a test message")
-	fileInfo.MyLog("This is second test message")
-	fileErr.MyLog("And this is a bad message")
+	fileLog.LogInfo("This is a test message")
+	fileLog.LogInfo("This is second test message")
+	fileLog.LogError("And this is a bad message")
 
 	closingErr := mylogger.CloseFile(destinationfile)
 	if closingErr != nil {

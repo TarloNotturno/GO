@@ -7,7 +7,8 @@ import (
 )
 
 type Logger interface {
-	MyLog(message string)
+	LogInfo(message string)
+	LogError(message string)
 }
 
 func OpenFile(destinationFile string) (*os.File, error) {
@@ -21,8 +22,12 @@ func OpenFile(destinationFile string) (*os.File, error) {
 	return destPtr, nil
 }
 
-func formattingMessage(logType string, message string) string {
-	return fmt.Sprintf("%s | %s\n", logType, message)
+func formattingErr(message string) string {
+	return fmt.Sprintf("Error | %s\n", message)
+}
+
+func formattingInfo(message string) string {
+	return fmt.Sprintf("Info | %s\n", message)
 }
 
 func CloseFile(destinationFile *os.File) error {
@@ -31,24 +36,24 @@ func CloseFile(destinationFile *os.File) error {
 
 func NewLogger(input ...any) (Logger, error) {
 	switch len(input) {
+	case 0:
+		//	{
+		//		switch v := input[0].(type) {
+		//		case string:
+		return NewWindowLog(), nil
+	//		}
+	//	}
 	case 1:
+		//	switch input1 := input[0].(type) {
+		//	case string:
 		{
-			switch v := input[0].(type) {
-			case string:
-				return NewWindowLog(v), nil
+			switch input2 := input[0].(type) {
+			case *os.File:
+				return NewFileLogger(input2), nil
 			}
-		}
-	case 2:
-		switch input1 := input[0].(type) {
-		case string:
-			{
-				switch input2 := input[1].(type) {
-				case *os.File:
-					return NewFileLogger(input1, input2), nil
-				}
 
-			}
 		}
+		//	}
 	}
 	return nil, errors.New("invalid input")
 }
