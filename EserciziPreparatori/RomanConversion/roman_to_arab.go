@@ -15,20 +15,18 @@ func clearUnexpectedChar(inputString string) string {
 func FromRomanToArab(inputString string) int64 {
 	n := 0
 	inputString = clearUnexpectedChar(inputString)
-	convertedNumb := int64(0)
-	for n < len(inputString)-1 {
-		currentVal := int64(fromCharToInt[string(inputString[n])])
-		nextVal := int64(fromCharToInt[string(inputString[n+1])])
-		if currentVal >= nextVal {
-			convertedNumb += currentVal
+	var convertedNumb int64
+	oldVal := int64(0)
+	for _, val := range inputString {
+		app := int64(fromCharToInt[string(val)])
+		if oldVal >= app {
+			convertedNumb += oldVal
 		} else {
-			convertedNumb += (nextVal - currentVal)
-			n++
+			convertedNumb += -oldVal
 		}
+		oldVal = app
 		n++
 	}
-	if n == len(inputString)-1 {
-		convertedNumb += int64(fromCharToInt[lowUpConversion[string(inputString[n])]])
-	}
+	convertedNumb += oldVal
 	return convertedNumb
 }
